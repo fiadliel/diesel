@@ -689,6 +689,51 @@ define_sql_function! {
 
 #[cfg(feature = "postgres_backend")]
 define_sql_function! {
+    /// Aggregate input values, including nulls, into an array.
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// # include!("../../doctest_setup.rs");
+    /// #
+    /// # fn main() {
+    /// #     run_test().unwrap();
+    /// # }
+    /// #
+    /// # fn run_test() -> QueryResult<()> {
+    /// #     use diesel::dsl::array_agg;
+    /// #     use crate::schema::users;
+    /// #     let connection = &mut establish_connection();
+    /// #     diesel::sql_query("DROP TABLE IF EXISTS users").execute(connection).unwrap();
+    /// #     diesel::sql_query("CREATE TABLE users (id SERIAL PRIMARY KEY, name TEXT NOT NULL)")
+    /// #           .execute(connection)
+    /// #           .unwrap();
+    /// #     diesel::insert_into(users::table).values(&[
+    /// #       (users::id.eq(0), users::name.eq("Sean")),
+    /// #       (users::id.eq(1), users::name.eq("Tess")),
+    /// #       (users::id.eq(2), users::name.eq("Tess"))
+    /// #     ]).execute(connection)?;
+    /// #
+    /// let data = users::table
+    ///     .group_by(users::name)
+    ///     .select((users::name, array_agg(users::id)))
+    /// #     .order_by(users::name.asc())
+    ///     .load::<(String, Vec<i32>)>(connection)?;
+    ///
+    /// assert_eq!(vec![
+    ///          ("Sean".to_string(), vec![0]),
+    ///          ("Tess".to_string(), vec![1, 2])
+    ///     ], data);
+    /// #     Ok(())
+    /// # }
+    /// ```
+    #[aggregate]
+    #[sql_name = "array_agg"]
+    fn array_agg<T: SingleValue>(t: T) -> Array<T>;
+}
+
+#[cfg(feature = "postgres_backend")]
+define_sql_function! {
     /// Append an element to the end of an array
     ///
     /// # Example

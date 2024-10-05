@@ -11,6 +11,7 @@ pub const SQL_TYPE_NOTE: &str = "sql_type = Foo";
 pub const SERIALIZE_AS_NOTE: &str = "serialize_as = Foo";
 pub const DESERIALIZE_AS_NOTE: &str = "deserialize_as = Foo";
 pub const TABLE_NAME_NOTE: &str = "table_name = foo";
+pub const TABLE_ALIAS_NOTE: &str = "table_alias = foo";
 pub const TREAT_NONE_AS_DEFAULT_VALUE_NOTE: &str = "treat_none_as_default_value = true";
 pub const TREAT_NONE_AS_NULL_NOTE: &str = "treat_none_as_null = true";
 pub const BELONGS_TO_NOTE: &str = "belongs_to(Foo, foreign_key = foo_id)";

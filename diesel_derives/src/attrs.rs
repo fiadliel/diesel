@@ -15,7 +15,7 @@ use crate::util::{
     parse_eq, parse_paren, unknown_attribute, BELONGS_TO_NOTE, COLUMN_NAME_NOTE,
     DESERIALIZE_AS_NOTE, MYSQL_TYPE_NOTE, POSTGRES_TYPE_NOTE, SELECT_EXPRESSION_NOTE,
     SELECT_EXPRESSION_TYPE_NOTE, SERIALIZE_AS_NOTE, SQLITE_TYPE_NOTE, SQL_TYPE_NOTE,
-    TABLE_NAME_NOTE, TREAT_NONE_AS_DEFAULT_VALUE_NOTE, TREAT_NONE_AS_NULL_NOTE,
+    TABLE_ALIAS_NOTE, TABLE_NAME_NOTE, TREAT_NONE_AS_DEFAULT_VALUE_NOTE, TREAT_NONE_AS_NULL_NOTE,
 };
 
 use crate::util::{parse_paren_list, CHECK_FOR_BACKEND_NOTE};
@@ -218,6 +218,7 @@ pub enum StructAttr {
     ForeignDerive(Ident),
 
     TableName(Ident, Path),
+    TableAlias(Ident, Path),
     SqlType(Ident, TypePath),
     TreatNoneAsDefaultValue(Ident, LitBool),
     TreatNoneAsNull(Ident, LitBool),
@@ -243,6 +244,10 @@ impl Parse for StructAttr {
             "table_name" => Ok(StructAttr::TableName(
                 name,
                 parse_eq(input, TABLE_NAME_NOTE)?,
+            )),
+            "table_alias" => Ok(StructAttr::TableAlias(
+                name,
+                parse_eq(input, TABLE_ALIAS_NOTE)?,
             )),
             "sql_type" => Ok(StructAttr::SqlType(name, parse_eq(input, SQL_TYPE_NOTE)?)),
             "treat_none_as_default_value" => Ok(StructAttr::TreatNoneAsDefaultValue(
@@ -286,6 +291,7 @@ impl Parse for StructAttr {
                     "not_sized",
                     "foreign_derive",
                     "table_name",
+                    "table_alias",
                     "sql_type",
                     "treat_none_as_default_value",
                     "treat_none_as_null",
@@ -308,6 +314,7 @@ impl MySpanned for StructAttr {
             | StructAttr::NotSized(ident)
             | StructAttr::ForeignDerive(ident)
             | StructAttr::TableName(ident, _)
+            | StructAttr::TableAlias(ident, _)
             | StructAttr::SqlType(ident, _)
             | StructAttr::TreatNoneAsDefaultValue(ident, _)
             | StructAttr::TreatNoneAsNull(ident, _)

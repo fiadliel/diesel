@@ -152,7 +152,12 @@ fn field_column_ty(
     } else {
         let table_name = &model.table_names()[0];
         let column_name = field.column_name()?.to_ident()?;
-        Ok(quote!(#table_name::#column_name))
+
+        if let Some(table_alias) = &model.table_alias {
+            Ok(quote::quote!(diesel::helper_types::Field<#table_alias, #table_name::#column_name>))
+        } else {
+            Ok(quote!(#table_name::#column_name))
+        }
     }
 }
 
@@ -166,6 +171,11 @@ fn field_column_inst(field: &Field, model: &Model) -> Result<TokenStream> {
     } else {
         let table_name = &model.table_names()[0];
         let column_name = field.column_name()?.to_ident()?;
-        Ok(quote!(#table_name::#column_name))
+
+        if let Some(table_alias) = &model.table_alias {
+            Ok(quote!(#table_alias.field(#table_name::#column_name)))
+        } else {
+            Ok(quote!(#table_name::#column_name))
+        }
     }
 }

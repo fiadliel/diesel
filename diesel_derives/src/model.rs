@@ -16,6 +16,7 @@ use crate::util::camel_to_snake;
 pub struct Model {
     name: Path,
     table_names: Vec<Path>,
+    pub table_alias: Option<Path>,
     pub primary_key_names: Vec<Ident>,
     treat_none_as_default_value: Option<LitBool>,
     treat_none_as_null: Option<LitBool>,
@@ -60,6 +61,7 @@ impl Model {
         };
 
         let mut table_names = vec![];
+        let mut table_alias = None;
         let mut primary_key_names = vec![Ident::new("id", Span::call_site())];
         let mut treat_none_as_default_value = None;
         let mut treat_none_as_null = None;
@@ -86,6 +88,7 @@ impl Model {
                     }
                     table_names.push(value)
                 }
+                StructAttr::TableAlias(_, val) => table_alias = Some(val),
                 StructAttr::PrimaryKey(_, keys) => {
                     primary_key_names = keys.into_iter().collect();
                 }
@@ -111,6 +114,7 @@ impl Model {
         Ok(Self {
             name,
             table_names,
+            table_alias,
             primary_key_names,
             treat_none_as_default_value,
             treat_none_as_null,

@@ -417,6 +417,7 @@ fn postgres_functions() -> _ {
             pg_extras::timestamptz.nullable(),
             bound,
         ),
+        array_agg(pg_extras::id),
         array_append(pg_extras::array, pg_extras::id),
         array_replace(pg_extras::array, pg_extras::id, pg_extras::id),
         array_dims(pg_extras::array),

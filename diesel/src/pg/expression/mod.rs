@@ -5,6 +5,7 @@
 //! kept separate purely for documentation purposes.
 
 pub(crate) mod array;
+pub(crate) mod array_agg;
 #[cfg(all(feature = "with-deprecated", not(feature = "without-deprecated")))]
 pub(crate) mod array_comparison;
 pub(crate) mod expression_methods;
@@ -21,6 +22,11 @@ mod date_and_time;
 /// [`diesel::dsl`](crate::dsl) when compiled with the `feature =
 /// "postgres"` flag.
 pub mod dsl {
+    use crate::dsl::SqlTypeOf;
+
+    #[doc(inline)]
+    pub use super::array_agg::*;
+
     #[cfg(all(feature = "with-deprecated", not(feature = "without-deprecated")))]
     #[doc(inline)]
     #[allow(deprecated)]
@@ -34,4 +40,7 @@ pub mod dsl {
 
     #[doc(inline)]
     pub use super::functions::*;
+
+    /// The return type of [`count(expr)`](crate::dsl::count())
+    pub type array_agg<Expr> = super::array_agg::array_agg<SqlTypeOf<Expr>, Expr>;
 }

@@ -166,11 +166,6 @@ mod information_schema {
     }
 }
 
-define_sql_function! {
-    #[aggregate]
-    fn array_agg(input: diesel::sql_types::Text) -> diesel::sql_types::Array<diesel::sql_types::Text>;
-}
-
 #[allow(clippy::similar_names)]
 pub fn load_foreign_key_constraints(
     connection: &mut PgConnection,

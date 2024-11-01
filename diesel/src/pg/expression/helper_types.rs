@@ -336,6 +336,10 @@ pub type array_to_string<A, D> = super::functions::array_to_string<
     D,            // The delimiter
 >;
 
+#[allow(non_camel_case_types)]
+#[cfg(feature = "postgres_backend")]
+pub type array_agg<E> = super::array_agg::array_agg<SqlTypeOf<E>, E>;
+
 /// Return type of [`lower(range)`](super::functions::lower())
 #[allow(non_camel_case_types)]
 #[cfg(feature = "postgres_backend")]
